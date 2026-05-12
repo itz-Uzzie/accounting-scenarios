@@ -123,117 +123,119 @@ export default function ScenariosManager() {
   }
 
   return (
-    <div className="w-full space-y-8 animate-fade-in">
-      {/* Header & Search */}
-      <div className="flex flex-col md:flex-row gap-4 justify-between items-center bg-white/5 p-6 rounded-2xl border border-white/10 backdrop-blur-sm">
-        <div className="relative w-full md:max-w-md">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500" />
-          <input
-            type="text"
-            placeholder="Search scenarios or categories..."
-            className="w-full bg-black/20 border border-white/10 rounded-xl py-2 pl-10 pr-4 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500/50 transition-all"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
+    <>
+      <div className="w-full space-y-8 animate-fade-in">
+        {/* Header & Search */}
+        <div className="flex flex-col md:flex-row gap-4 justify-between items-center bg-white/5 p-6 rounded-2xl border border-white/10 backdrop-blur-sm">
+          <div className="relative w-full md:max-w-md">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500" />
+            <input
+              type="text"
+              placeholder="Search scenarios or categories..."
+              className="w-full bg-black/20 border border-white/10 rounded-xl py-2 pl-10 pr-4 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500/50 transition-all"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </div>
+          <button
+            onClick={() => handleOpenModal()}
+            className="w-full md:w-auto flex items-center justify-center gap-2 px-6 py-2 bg-linear-to-r from-purple-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 text-white rounded-xl font-medium transition-all shadow-lg shadow-purple-500/20 active:scale-95"
+          >
+            <Plus className="w-4 h-4" />
+            Add New Scenario
+          </button>
         </div>
-        <button
-          onClick={() => handleOpenModal()}
-          className="w-full md:w-auto flex items-center justify-center gap-2 px-6 py-2 bg-linear-to-r from-purple-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 text-white rounded-xl font-medium transition-all shadow-lg shadow-purple-500/20 active:scale-95"
-        >
-          <Plus className="w-4 h-4" />
-          Add New Scenario
-        </button>
-      </div>
 
-      {isError && (
-        <div className="flex items-center gap-3 p-4 bg-red-500/10 border border-red-500/20 rounded-xl text-red-400 text-sm">
-          <AlertCircle className="w-5 h-5 shrink-0" />
-          {typeof error === "string" ? error : "Failed to fetch scenarios"}
-        </div>
-      )}
+        {isError && (
+          <div className="flex items-center gap-3 p-4 bg-red-500/10 border border-red-500/20 rounded-xl text-red-400 text-sm">
+            <AlertCircle className="w-5 h-5 shrink-0" />
+            {typeof error === "string" ? error : "Failed to fetch scenarios"}
+          </div>
+        )}
 
-      {/* Grouped Tables */}
-      {Object.entries(groupedRules).length > 0 ? (
-        Object.entries(groupedRules)
-          .sort(([, a], [, b]) => b.length - a.length)
-          .map(([category, categoryRules]) => (
-            <div key={category} className="space-y-4">
-              <div className="flex items-center gap-4">
-                <h2 className="text-xl font-bold text-white/90 px-2 border-l-4 border-purple-500">
-                  {category}
-                </h2>
-                <span className="text-xs font-medium text-zinc-500 bg-white/5 px-2 py-1 rounded-full border border-white/5">
-                  {categoryRules.length} items
-                </span>
-              </div>
+        {/* Grouped Tables */}
+        {Object.entries(groupedRules).length > 0 ? (
+          Object.entries(groupedRules)
+            .sort(([, a], [, b]) => b.length - a.length)
+            .map(([category, categoryRules]) => (
+              <div key={category} className="space-y-4">
+                <div className="flex items-center gap-4">
+                  <h2 className="text-xl font-bold text-white/90 px-2 border-l-4 border-purple-500">
+                    {category}
+                  </h2>
+                  <span className="text-xs font-medium text-zinc-500 bg-white/5 px-2 py-1 rounded-full border border-white/5">
+                    {categoryRules.length} items
+                  </span>
+                </div>
 
-              <div className="overflow-hidden rounded-2xl border border-white/10 bg-white/2 backdrop-blur-sm shadow-xl">
-                <div className="overflow-x-auto">
-                  <table className="w-full text-sm text-left">
-                    <thead className="bg-white/5 text-zinc-400 font-medium border-b border-white/10">
-                      <tr>
-                        <th className="px-6 py-4">Scenario</th>
-                        <th className="px-6 py-4">Debit</th>
-                        <th className="px-6 py-4">Credit</th>
-                        <th className="px-6 py-4">Extra Info</th>
-                        <th className="px-6 py-4 text-right">Actions</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-white/5">
-                      {categoryRules.map((rule) => (
-                        <tr
-                          key={rule.id}
-                          className="hover:bg-white/3 transition-colors group"
-                        >
-                          <td className="px-6 py-4 font-medium text-white/80">
-                            {rule.scenario}
-                          </td>
-                          <td className="px-6 py-4">
-                            <span className="text-green-400/90 font-mono">
-                              {rule.debit}
-                            </span>
-                          </td>
-                          <td className="px-6 py-4">
-                            <span className="text-red-400/90 font-mono">
-                              {rule.credit}
-                            </span>
-                          </td>
-                          <td className="px-6 py-4 text-zinc-500 italic">
-                            {rule.extra || "—"}
-                          </td>
-                          <td className="px-6 py-4 text-right">
-                            <div className="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                              <button
-                                onClick={() => handleOpenModal(rule)}
-                                className="p-2 hover:bg-white/10 rounded-lg text-zinc-400 hover:text-white transition-colors"
-                                title="Edit"
-                              >
-                                <Pencil className="w-4 h-4" />
-                              </button>
-                              <button
-                                onClick={() => handleDelete(rule.id)}
-                                className="p-2 hover:bg-red-500/10 rounded-lg text-zinc-400 hover:text-red-400 transition-colors"
-                                title="Delete"
-                              >
-                                <Trash2 className="w-4 h-4" />
-                              </button>
-                            </div>
-                          </td>
+                <div className="overflow-hidden rounded-2xl border border-white/10 bg-white/2 backdrop-blur-sm shadow-xl">
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-sm text-left">
+                      <thead className="bg-white/5 text-zinc-400 font-medium border-b border-white/10">
+                        <tr>
+                          <th className="px-6 py-4">Scenario</th>
+                          <th className="px-6 py-4">Debit</th>
+                          <th className="px-6 py-4">Credit</th>
+                          <th className="px-6 py-4">Extra Info</th>
+                          <th className="px-6 py-4 text-right">Actions</th>
                         </tr>
-                      ))}
-                    </tbody>
-                  </table>
+                      </thead>
+                      <tbody className="divide-y divide-white/5">
+                        {categoryRules.map((rule) => (
+                          <tr
+                            key={rule.id}
+                            className="hover:bg-white/3 transition-colors group"
+                          >
+                            <td className="px-6 py-4 font-medium text-white/80">
+                              {rule.scenario}
+                            </td>
+                            <td className="px-6 py-4">
+                              <span className="text-green-400/90 font-mono">
+                                {rule.debit}
+                              </span>
+                            </td>
+                            <td className="px-6 py-4">
+                              <span className="text-red-400/90 font-mono">
+                                {rule.credit}
+                              </span>
+                            </td>
+                            <td className="px-6 py-4 text-zinc-500 italic">
+                              {rule.extra || "—"}
+                            </td>
+                            <td className="px-6 py-4 text-right">
+                              <div className="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                <button
+                                  onClick={() => handleOpenModal(rule)}
+                                  className="p-2 hover:bg-white/10 rounded-lg text-zinc-400 hover:text-white transition-colors"
+                                  title="Edit"
+                                >
+                                  <Pencil className="w-4 h-4" />
+                                </button>
+                                <button
+                                  onClick={() => handleDelete(rule.id)}
+                                  className="p-2 hover:bg-red-500/10 rounded-lg text-zinc-400 hover:text-red-400 transition-colors"
+                                  title="Delete"
+                                >
+                                  <Trash2 className="w-4 h-4" />
+                                </button>
+                              </div>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))
-      ) : (
-        <div className="text-center py-20 bg-white/2 rounded-3xl border border-dashed border-white/10">
-          <p className="text-zinc-500">
-            No accounting scenarios found. Try a different search or add one.
-          </p>
-        </div>
-      )}
+            ))
+        ) : (
+          <div className="text-center py-20 bg-white/2 rounded-3xl border border-dashed border-white/10">
+            <p className="text-zinc-500">
+              No accounting scenarios found. Try a different search or add one.
+            </p>
+          </div>
+        )}
+      </div>
 
       {/* Modal */}
       {isModalOpen && (
@@ -373,6 +375,6 @@ export default function ScenariosManager() {
           </div>
         </div>
       )}
-    </div>
+    </>
   );
 }
