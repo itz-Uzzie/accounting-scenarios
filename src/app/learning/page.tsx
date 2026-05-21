@@ -1,4 +1,5 @@
 import { Metadata } from "next";
+import Link from "next/link";
 import Breadcrumbs from "@/components/breadcrumbs";
 import {
   Briefcase,
@@ -20,6 +21,7 @@ export default function LearningPage() {
   const terms = [
     {
       title: "Assets",
+      slug: "assets",
       icon: Briefcase,
       color: "text-blue-400",
       description:
@@ -27,6 +29,7 @@ export default function LearningPage() {
     },
     {
       title: "Liabilities",
+      slug: "liabilities",
       icon: CreditCard,
       color: "text-red-400",
       description:
@@ -34,6 +37,7 @@ export default function LearningPage() {
     },
     {
       title: "Equity (Capital)",
+      slug: "equity",
       icon: PieChart,
       color: "text-purple-400",
       description:
@@ -41,6 +45,7 @@ export default function LearningPage() {
     },
     {
       title: "Revenue (Income)",
+      slug: "revenue",
       icon: TrendingUp,
       color: "text-green-400",
       description:
@@ -48,6 +53,7 @@ export default function LearningPage() {
     },
     {
       title: "Expenses",
+      slug: "expenses",
       icon: TrendingDown,
       color: "text-orange-400",
       description:
@@ -55,6 +61,7 @@ export default function LearningPage() {
     },
     {
       title: "The Accounting Equation",
+      slug: "accounting-equation",
       icon: Scale,
       color: "text-yellow-400",
       description:
@@ -62,6 +69,7 @@ export default function LearningPage() {
     },
     {
       title: "Debits & Credits",
+      slug: "debits-and-credits",
       icon: ArrowRightLeft,
       color: "text-indigo-400",
       description:
@@ -106,9 +114,10 @@ export default function LearningPage() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {terms.map((term, idx) => (
-            <div
+            <Link
               key={idx}
-              className="p-8 border border-white/10 bg-white/2 rounded-3xl backdrop-blur-sm hover:border-white/20  transition-all group"
+              href={`/learning/${term.slug}`}
+              className="p-8 border border-white/10 bg-white/2 rounded-3xl backdrop-blur-sm hover:border-white/20 hover:bg-white/5 transition-all group block"
             >
               <div className="flex items-center gap-4 mb-6">
                 <div
@@ -116,14 +125,14 @@ export default function LearningPage() {
                 >
                   <term.icon className="w-6 h-6" />
                 </div>
-                <h2 className="text-2xl font-bold text-white/90">
+                <h2 className="text-2xl font-bold text-white/90 group-hover:text-white transition-colors">
                   {term.title}
                 </h2>
               </div>
               <p className="text-zinc-400 leading-relaxed text-base">
                 {term.description}
               </p>
-            </div>
+            </Link>
           ))}
         </div>
 

@@ -4,20 +4,9 @@ import { useState, useMemo } from "react";
 import {
   useGetScenariosQuery,
   useAddScenarioMutation,
-  useUpdateScenarioMutation,
-  useDeleteScenarioMutation,
   AccountingRule,
 } from "@/store/api/scenariosApi";
-import {
-  Plus,
-  Pencil,
-  Trash2,
-  Search,
-  AlertCircle,
-  Loader2,
-  X,
-  Save,
-} from "lucide-react";
+import { Plus, Search, AlertCircle, Loader2, X, Save } from "lucide-react";
 
 export default function ScenariosManager() {
   const {
@@ -27,12 +16,9 @@ export default function ScenariosManager() {
     error,
   } = useGetScenariosQuery();
   const [addScenario] = useAddScenarioMutation();
-  const [updateScenario] = useUpdateScenarioMutation();
-  const [deleteScenario] = useDeleteScenarioMutation();
 
   const [searchTerm, setSearchTerm] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editingRule, setEditingRule] = useState<AccountingRule | null>(null);
   const [formData, setFormData] = useState({
     category: "",
     scenario: "",
@@ -59,57 +45,28 @@ export default function ScenariosManager() {
     );
   }, [rules, searchTerm]);
 
-  const handleOpenModal = (rule: AccountingRule | null = null) => {
-    if (rule) {
-      setEditingRule(rule);
-      setFormData({
-        category: rule.category,
-        scenario: rule.scenario,
-        debit: rule.debit,
-        credit: rule.credit,
-        extra: rule.extra || "",
-      });
-    } else {
-      setEditingRule(null);
-      setFormData({
-        category: "",
-        scenario: "",
-        debit: "",
-        credit: "",
-        extra: "",
-      });
-    }
+  const handleOpenModal = () => {
+    setFormData({
+      category: "",
+      scenario: "",
+      debit: "",
+      credit: "",
+      extra: "",
+    });
     setIsModalOpen(true);
   };
 
   const handleCloseModal = () => {
     setIsModalOpen(false);
-    setEditingRule(null);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      if (editingRule) {
-        await updateScenario({
-          id: editingRule.id,
-          changes: formData,
-        }).unwrap();
-      } else {
-        await addScenario(formData).unwrap();
-      }
+      await addScenario(formData).unwrap();
       handleCloseModal();
     } catch (err: any) {
       alert(err.message || "Operation failed");
-    }
-  };
-
-  const handleDelete = async (id: string) => {
-    if (!confirm("Are you sure you want to delete this scenario?")) return;
-    try {
-      await deleteScenario(id).unwrap();
-    } catch (err: any) {
-      alert(err.message || "Delete failed");
     }
   };
 
@@ -177,7 +134,6 @@ export default function ScenariosManager() {
                           <th className="px-6 py-4">Debit</th>
                           <th className="px-6 py-4">Credit</th>
                           <th className="px-6 py-4">Extra Info</th>
-                          <th className="px-6 py-4 text-right">Actions</th>
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-white/5">
@@ -202,24 +158,6 @@ export default function ScenariosManager() {
                             <td className="px-6 py-4 text-zinc-500 italic">
                               {rule.extra || "—"}
                             </td>
-                            <td className="px-6 py-4 text-right">
-                              <div className="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                                <button
-                                  onClick={() => handleOpenModal(rule)}
-                                  className="p-2 hover:bg-white/10 rounded-lg text-zinc-400 hover:text-white transition-colors"
-                                  title="Edit"
-                                >
-                                  <Pencil className="w-4 h-4" />
-                                </button>
-                                <button
-                                  onClick={() => handleDelete(rule.id)}
-                                  className="p-2 hover:bg-red-500/10 rounded-lg text-zinc-400 hover:text-red-400 transition-colors"
-                                  title="Delete"
-                                >
-                                  <Trash2 className="w-4 h-4" />
-                                </button>
-                              </div>
-                            </td>
                           </tr>
                         ))}
                       </tbody>
@@ -242,9 +180,7 @@ export default function ScenariosManager() {
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-md animate-in fade-in duration-200">
           <div className="w-full max-w-lg bg-zinc-900 border border-white/10 rounded-2xl shadow-2xl overflow-hidden scale-in animate-in zoom-in-95 duration-200">
             <div className="flex items-center justify-between p-6 border-b border-white/5 bg-white/5">
-              <h3 className="text-lg font-bold">
-                {editingRule ? "Edit Scenario" : "Add New Scenario"}
-              </h3>
+              <h3 className="text-lg font-bold">Add New Scenario</h3>
               <button
                 onClick={handleCloseModal}
                 className="p-2 hover:bg-white/10 rounded-full transition-colors"
@@ -368,7 +304,7 @@ export default function ScenariosManager() {
                   className="flex-1 py-3 bg-white text-black hover:bg-zinc-200 rounded-xl font-bold transition-all shadow-xl shadow-white/10 active:scale-95 flex items-center justify-center gap-2"
                 >
                   <Save className="w-4 h-4" />
-                  {editingRule ? "Update Scenario" : "Save Scenario"}
+                  Save Scenario
                 </button>
               </div>
             </form>
